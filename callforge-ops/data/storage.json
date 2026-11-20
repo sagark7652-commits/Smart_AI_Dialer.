@@ -250,6 +250,42 @@
   ],
   "cdrLogs": [
     {
+      "id": "call_6w5VUqgm",
+      "callId": "tata_yT5MPXRC0-nj",
+      "provider": "tata_smartflo",
+      "customerName": "Rajesh Varma",
+      "customerPhone": "+91 98201 55432",
+      "agentName": "Priya (AI Voice Agent)",
+      "campaign": "Autonomous Voice Call",
+      "duration": "0m 17s",
+      "durationSeconds": 17,
+      "status": "Completed",
+      "sentiment": "Neutral",
+      "qaScore": 80,
+      "transcript": "Agent: Hello Rajesh Varma ji, Namaste! Main Priya baat kar rahi hoon CallForge Operations se. Aapne pehle callback request kiya tha, isliye maine aapko connect kiya hai. Kya abhi aapse 2 minute baat ho sakti hai?",
+      "summary": "Polite greeting initiated. Customer expressed neutral sentiment. Compliance disclosure check noted.",
+      "customerFeedback": "Ensure statutory recording disclosure is spoken in the first 10 seconds.",
+      "createdAt": "2026-11-20T18:28:28.405Z"
+    },
+    {
+      "id": "call_l6IYvZ0D",
+      "callId": "tata_iPEnLNnVj-g2",
+      "provider": "tata_smartflo",
+      "customerName": "Rajesh Varma",
+      "customerPhone": "+91 98201 55432",
+      "agentName": "Priya (AI Voice Agent)",
+      "campaign": "Autonomous Voice Call",
+      "duration": "0m 17s",
+      "durationSeconds": 17,
+      "status": "Completed",
+      "sentiment": "Neutral",
+      "qaScore": 80,
+      "transcript": "Agent: Hello Rajesh Varma ji, Namaste! Main Priya baat kar rahi hoon CallForge Operations se. Aapne pehle callback request kiya tha, isliye maine aapko connect kiya hai. Kya abhi aapse 2 minute baat ho sakti hai?",
+      "summary": "Polite greeting initiated. Customer expressed neutral sentiment. Compliance disclosure check noted.",
+      "customerFeedback": "Ensure statutory recording disclosure is spoken in the first 10 seconds.",
+      "createdAt": "2026-11-20T18:28:28.404Z"
+    },
+    {
       "id": "call_KdyDiDyA",
       "callId": "call_IIXPAp7G",
       "provider": "tata_smartflo",
@@ -1208,8 +1244,8 @@
       "scheduledAt": "2026-11-08T04:25:52.137Z",
       "reason": "Consultation and cleaning appointment booking",
       "requestedBy": "customer",
-      "notes": "Automated callback scheduled by AI Voice Assistant for Rajesh Varma.",
-      "status": "pending",
+      "notes": "Automated callback scheduled by AI Voice Assistant for Rajesh Varma. | Autonomous follow-up call initiated (tata_iPEnLNnVj-g2)",
+      "status": "completed",
       "createdAt": "2026-11-05T04:25:52.141Z"
     },
     {
@@ -1274,8 +1310,8 @@
       "scheduledAt": "2026-11-06T17:56:26.047Z",
       "reason": "Customer requested callback in 2 days",
       "requestedBy": "customer",
-      "notes": "Automated callback scheduled by AI Voice Assistant for Rajesh Varma.",
-      "status": "pending",
+      "notes": "Automated callback scheduled by AI Voice Assistant for Rajesh Varma. | Autonomous follow-up call initiated (tata_yT5MPXRC0-nj)",
+      "status": "completed",
       "createdAt": "2026-11-04T17:56:26.052Z"
     },
     {

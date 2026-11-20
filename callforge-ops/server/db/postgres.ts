@@ -123,8 +123,32 @@ async function ensureSchema() {
         CREATE INDEX IF NOT EXISTS idx_calls_created_at ON calls(created_at);
       `);
 
+      // 4. Create virtual_numbers table if not exists
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS virtual_numbers (
+          id VARCHAR(100) PRIMARY KEY,
+          phone_number VARCHAR(30) UNIQUE NOT NULL,
+          friendly_name VARCHAR(150) NOT NULL,
+          provider VARCHAR(50) NOT NULL,
+          status VARCHAR(30) NOT NULL DEFAULT 'active',
+          type VARCHAR(30) NOT NULL DEFAULT 'bidirectional',
+          capabilities JSONB,
+          assigned_agent_id VARCHAR(100) DEFAULT 'agent_aarogya_dental',
+          inbound_routing JSONB,
+          provider_config JSONB,
+          webhook_url TEXT,
+          is_default_outbound BOOLEAN DEFAULT FALSE,
+          stats JSONB,
+          validation JSONB,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE INDEX IF NOT EXISTS idx_virtual_numbers_phone ON virtual_numbers(phone_number);
+        CREATE INDEX IF NOT EXISTS idx_virtual_numbers_provider ON virtual_numbers(provider);
+      `);
+
       isInitialized = true;
-      console.log("[PostgreSQL] 'calls' schema verified (with summary & feedback columns).");
+      console.log("[PostgreSQL] 'calls' and 'virtual_numbers' schema verified.");
     } finally {
       client.release();
     }
@@ -247,5 +271,114 @@ export async function getCallSummariesFromPostgres(limit = 50) {
   } catch (err: any) {
     console.warn("[PostgreSQL] Could not fetch call summaries:", err.message);
     return [];
+  }
+}
+
+/**
+ * Fetch all virtual numbers from PostgreSQL
+ */
+export async function getVirtualNumbersFromPostgres() {
+  try {
+    const clientPool = await getPostgresPool();
+    if (!clientPool) return null;
+
+    const res = await clientPool.query(
+      `SELECT 
+        id,
+        phone_number AS "phoneNumber",
+        friendly_name AS "friendlyName",
+        provider,
+        status,
+        type,
+        capabilities,
+        assigned_agent_id AS "assignedAgentId",
+        inbound_routing AS "inboundRouting",
+        provider_config AS "providerConfig",
+        webhook_url AS "webhookUrl",
+        is_default_outbound AS "isDefaultOutbound",
+        stats,
+        validation,
+        created_at AS "createdAt",
+        updated_at AS "updatedAt"
+       FROM virtual_numbers
+       ORDER BY is_default_outbound DESC, created_at ASC;`
+    );
+    return res.rows;
+  } catch (err: any) {
+    console.warn("[PostgreSQL] Failed to fetch virtual numbers:", err.message);
+    return null;
+  }
+}
+
+/**
+ * Upsert a virtual number in PostgreSQL
+ */
+export async function saveVirtualNumberToPostgres(number: any) {
+  try {
+    const clientPool = await getPostgresPool();
+    if (!clientPool) return null;
+
+    const query = `
+      INSERT INTO virtual_numbers (
+        id, phone_number, friendly_name, provider, status, type,
+        capabilities, assigned_agent_id, inbound_routing, provider_config,
+        webhook_url, is_default_outbound, stats, validation, created_at, updated_at
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+      ON CONFLICT (id) DO UPDATE SET
+        phone_number = EXCLUDED.phone_number,
+        friendly_name = EXCLUDED.friendly_name,
+        provider = EXCLUDED.provider,
+        status = EXCLUDED.status,
+        type = EXCLUDED.type,
+        capabilities = EXCLUDED.capabilities,
+        assigned_agent_id = EXCLUDED.assigned_agent_id,
+        inbound_routing = EXCLUDED.inbound_routing,
+        provider_config = EXCLUDED.provider_config,
+        webhook_url = EXCLUDED.webhook_url,
+        is_default_outbound = EXCLUDED.is_default_outbound,
+        stats = EXCLUDED.stats,
+        validation = EXCLUDED.validation,
+        updated_at = EXCLUDED.updated_at
+      RETURNING *;
+    `;
+    const values = [
+      number.id,
+      number.phoneNumber,
+      number.friendlyName,
+      number.provider,
+      number.status || "active",
+      number.type || "bidirectional",
+      JSON.stringify(number.capabilities || []),
+      number.assignedAgentId || "agent_aarogya_dental",
+      JSON.stringify(number.inboundRouting || {}),
+      JSON.stringify(number.providerConfig || {}),
+      number.webhookUrl,
+      Boolean(number.isDefaultOutbound),
+      JSON.stringify(number.stats || {}),
+      JSON.stringify(number.validation || {}),
+      number.createdAt || new Date().toISOString(),
+      number.updatedAt || new Date().toISOString(),
+    ];
+    const res = await clientPool.query(query, values);
+    return res.rows[0];
+  } catch (err: any) {
+    console.warn("[PostgreSQL] Failed to upsert virtual number:", err.message);
+    return null;
+  }
+}
+
+/**
+ * Delete a virtual number from PostgreSQL
+ */
+export async function deleteVirtualNumberFromPostgres(id: string) {
+  try {
+    const clientPool = await getPostgresPool();
+    if (!clientPool) return false;
+
+    await clientPool.query(`DELETE FROM virtual_numbers WHERE id = $1`, [id]);
+    return true;
+  } catch (err: any) {
+    console.warn("[PostgreSQL] Failed to delete virtual number:", err.message);
+    return false;
   }
 }

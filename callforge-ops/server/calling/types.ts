@@ -161,3 +161,73 @@ export interface NvidiaPipelineSimulationResult {
   audioWaveform?: number[];
   timestamp: string;
 }
+
+
+// =============================================================================
+// VIRTUAL NUMBER MANAGEMENT TYPES
+// =============================================================================
+
+export type VirtualNumberProvider = "tata_smartflo" | "twilio" | "exotel" | "custom_sip";
+
+export type VirtualNumberStatus = "active" | "inactive" | "pending_validation" | "error";
+
+export type VirtualNumberType = "inbound" | "outbound" | "bidirectional";
+
+export type VirtualNumberCapability = "voice" | "sms" | "recording" | "realtime_streaming";
+
+export type InboundRouteType = "ai_agent" | "ivr" | "human_queue" | "forward";
+
+export interface VirtualNumberInboundRouting {
+  routeType: InboundRouteType;
+  ivrFlowId?: string;
+  forwardNumber?: string;
+  greetingMessage?: string;
+  voiceLanguage?: string;
+  recordCalls: boolean;
+  businessHoursOnly?: boolean;
+}
+
+export interface VirtualNumberProviderConfig {
+  accountSid?: string;
+  apiKey?: string;
+  apiToken?: string;
+  sipTrunk?: string;
+  subaccount?: string;
+  region?: string;
+  authHeader?: string;
+}
+
+export interface VirtualNumberValidation {
+  status: "verified" | "unverified" | "failed";
+  lastValidatedAt?: string;
+  carrierName?: string;
+  latencyMs?: number;
+  message?: string;
+}
+
+export interface VirtualNumberStats {
+  totalCalls: number;
+  inboundCalls: number;
+  outboundCalls: number;
+  lastCallAt?: string;
+  activeChannels: number;
+}
+
+export interface VirtualNumber {
+  id: string;
+  phoneNumber: string; // E.164 formatted string, e.g. +912266001234
+  friendlyName: string;
+  provider: VirtualNumberProvider;
+  status: VirtualNumberStatus;
+  type: VirtualNumberType;
+  capabilities: VirtualNumberCapability[];
+  assignedAgentId: string;
+  inboundRouting: VirtualNumberInboundRouting;
+  providerConfig?: VirtualNumberProviderConfig;
+  webhookUrl: string;
+  isDefaultOutbound: boolean;
+  stats: VirtualNumberStats;
+  validation: VirtualNumberValidation;
+  createdAt: string;
+  updatedAt: string;
+}

@@ -206,6 +206,53 @@ export interface StoredAppSettings {
   updatedAt?: string;
 }
 
+export interface StoredVirtualNumber {
+  id: string;
+  phoneNumber: string;
+  friendlyName: string;
+  provider: "tata_smartflo" | "twilio" | "exotel" | "custom_sip";
+  status: "active" | "inactive" | "pending_validation" | "error";
+  type: "inbound" | "outbound" | "bidirectional";
+  capabilities: Array<"voice" | "sms" | "recording" | "realtime_streaming">;
+  assignedAgentId: string;
+  inboundRouting: {
+    routeType: "ai_agent" | "ivr" | "human_queue" | "forward";
+    ivrFlowId?: string;
+    forwardNumber?: string;
+    greetingMessage?: string;
+    voiceLanguage?: string;
+    recordCalls: boolean;
+    businessHoursOnly?: boolean;
+  };
+  providerConfig?: {
+    accountSid?: string;
+    apiKey?: string;
+    apiToken?: string;
+    sipTrunk?: string;
+    subaccount?: string;
+    region?: string;
+    authHeader?: string;
+  };
+  webhookUrl: string;
+  isDefaultOutbound: boolean;
+  stats: {
+    totalCalls: number;
+    inboundCalls: number;
+    outboundCalls: number;
+    lastCallAt?: string;
+    activeChannels: number;
+  };
+  validation: {
+    status: "verified" | "unverified" | "failed";
+    lastValidatedAt?: string;
+    carrierName?: string;
+    latencyMs?: number;
+    message?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface DatabaseStructure {
   leads: StoredLead[];
   cdrLogs: StoredCDR[];
@@ -224,6 +271,7 @@ interface DatabaseStructure {
   supportTickets?: StoredSupportTicket[];
   consentRecords?: StoredConsentRecord[];
   scheduledCallbacks?: StoredScheduledCallback[];
+  virtualNumbers?: StoredVirtualNumber[];
   appSettings?: StoredAppSettings;
   userCredentials?: Record<string, StoredUserCredential>;
 }
@@ -364,6 +412,125 @@ const DEFAULT_TRANSACTIONS: StoredTransaction[] = [];
 
 const DEFAULT_AUDIT_LOGS: StoredAuditLog[] = [];
 
+const DEFAULT_VIRTUAL_NUMBERS: StoredVirtualNumber[] = [
+  {
+    id: "vn_tata_dental_01",
+    phoneNumber: "09513XXXXXXX",
+    friendlyName: "Tata Smartflo DID - Priya (Aarogya Dental)",
+    provider: "tata_smartflo",
+    status: "active",
+    type: "bidirectional",
+    capabilities: ["voice", "recording", "realtime_streaming"],
+    assignedAgentId: "agent_aarogya_dental",
+    inboundRouting: {
+      routeType: "ai_agent",
+      greetingMessage: "Namaste! Welcome to Aarogya Dental Care. Main Priya bol rahi hoon, bataiye main aapki kya help kar sakti hoon?",
+      voiceLanguage: "hi",
+      recordCalls: true,
+      businessHoursOnly: false,
+    },
+    providerConfig: {
+      sipTrunk: "sip.tatasmartflo.com:5060",
+      region: "Asia/Kolkata",
+    },
+    webhookUrl: "/api/calling/virtual-numbers/vn_tata_dental_01/inbound",
+    isDefaultOutbound: true,
+    stats: {
+      totalCalls: 142,
+      inboundCalls: 98,
+      outboundCalls: 44,
+      lastCallAt: new Date(Date.now() - 3600000).toISOString(),
+      activeChannels: 0,
+    },
+    validation: {
+      status: "verified",
+      carrierName: "Tata Teleservices Smartflo",
+      latencyMs: 18,
+      message: "Connected to NVIDIA Riva Magpie Speech Pipeline & Tata SIP Gateway",
+      lastValidatedAt: new Date().toISOString(),
+    },
+    createdAt: new Date(Date.now() - 86400000 * 7).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: "vn_twilio_us_02",
+    phoneNumber: "+18005550199",
+    friendlyName: "CallForge Toll-Free Banking (Aarti)",
+    provider: "twilio",
+    status: "active",
+    type: "bidirectional",
+    capabilities: ["voice", "sms", "recording", "realtime_streaming"],
+    assignedAgentId: "agent_tata_banking_01",
+    inboundRouting: {
+      routeType: "ai_agent",
+      greetingMessage: "Namaste! Welcome to CallForge Banking Services on a recorded line. How can I help you today?",
+      voiceLanguage: "hi-IN",
+      recordCalls: true,
+      businessHoursOnly: false,
+    },
+    providerConfig: {
+      region: "us1",
+    },
+    webhookUrl: "/api/calling/virtual-numbers/vn_twilio_us_02/inbound",
+    isDefaultOutbound: false,
+    stats: {
+      totalCalls: 89,
+      inboundCalls: 65,
+      outboundCalls: 24,
+      lastCallAt: new Date(Date.now() - 7200000).toISOString(),
+      activeChannels: 0,
+    },
+    validation: {
+      status: "verified",
+      carrierName: "Twilio Voice GSM Gateway",
+      latencyMs: 32,
+      message: "Twilio Voice Webhook & Media Stream active",
+      lastValidatedAt: new Date().toISOString(),
+    },
+    createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: "vn_exotel_blr_03",
+    phoneNumber: "+918047104000",
+    friendlyName: "Bengaluru Interactive IVR Gateway",
+    provider: "exotel",
+    status: "active",
+    type: "inbound",
+    capabilities: ["voice", "sms", "recording"],
+    assignedAgentId: "ivr_workflow",
+    inboundRouting: {
+      routeType: "ivr",
+      ivrFlowId: "node-1",
+      greetingMessage: "Welcome to CallForge Interactive IVR. Connecting to qualification desk.",
+      voiceLanguage: "en-IN",
+      recordCalls: true,
+      businessHoursOnly: true,
+    },
+    providerConfig: {
+      region: "in-south",
+    },
+    webhookUrl: "/api/calling/virtual-numbers/vn_exotel_blr_03/inbound",
+    isDefaultOutbound: false,
+    stats: {
+      totalCalls: 53,
+      inboundCalls: 53,
+      outboundCalls: 0,
+      lastCallAt: new Date(Date.now() - 14400000).toISOString(),
+      activeChannels: 0,
+    },
+    validation: {
+      status: "verified",
+      carrierName: "Exotel India Voice Gateway",
+      latencyMs: 25,
+      message: "Exotel Flow Gather Webhook connected",
+      lastValidatedAt: new Date().toISOString(),
+    },
+    createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+];
+
 class PersistentStorage {
   private data: DatabaseStructure;
 
@@ -394,6 +561,9 @@ class PersistentStorage {
         if (!parsed.teamMembers || !Array.isArray(parsed.teamMembers)) parsed.teamMembers = DEFAULT_TEAM_MEMBERS;
         if (!parsed.auditLogs || !Array.isArray(parsed.auditLogs)) parsed.auditLogs = DEFAULT_AUDIT_LOGS;
         if (!parsed.whatsappLogs || !Array.isArray(parsed.whatsappLogs)) parsed.whatsappLogs = [];
+        if (!parsed.virtualNumbers || !Array.isArray(parsed.virtualNumbers) || parsed.virtualNumbers.length === 0) {
+          parsed.virtualNumbers = DEFAULT_VIRTUAL_NUMBERS;
+        }
         this.save(parsed);
         return parsed;
       }
@@ -432,6 +602,7 @@ class PersistentStorage {
       teamMembers: DEFAULT_TEAM_MEMBERS,
       auditLogs: DEFAULT_AUDIT_LOGS,
       whatsappLogs: [],
+      virtualNumbers: DEFAULT_VIRTUAL_NUMBERS,
     };
 
     this.save(defaultData);
@@ -1080,6 +1251,159 @@ class PersistentStorage {
     cb.status = "cancelled";
     this.save(this.data);
     return cb;
+  }
+
+  // --- Virtual Numbers Management Operations ---
+  getVirtualNumbers(filter?: { provider?: string; status?: string; agentId?: string }): StoredVirtualNumber[] {
+    let numbers = this.data.virtualNumbers || [];
+    if (filter?.provider && filter.provider !== "all") {
+      numbers = numbers.filter((n) => n.provider === filter.provider);
+    }
+    if (filter?.status && filter.status !== "all") {
+      numbers = numbers.filter((n) => n.status === filter.status);
+    }
+    if (filter?.agentId && filter.agentId !== "all") {
+      numbers = numbers.filter((n) => n.assignedAgentId === filter.agentId);
+    }
+    return numbers;
+  }
+
+  getVirtualNumber(id: string): StoredVirtualNumber | undefined {
+    return (this.data.virtualNumbers || []).find((n) => n.id === id);
+  }
+
+  getVirtualNumberByPhone(phone: string): StoredVirtualNumber | undefined {
+    const clean = phone.replace(/\D/g, "");
+    const clean10 = clean.slice(-10);
+    return (this.data.virtualNumbers || []).find((n) => {
+      const nClean = n.phoneNumber.replace(/\D/g, "");
+      return (
+        nClean === clean ||
+        n.phoneNumber === phone ||
+        (clean10.length === 10 && nClean.slice(-10) === clean10)
+      );
+    });
+  }
+
+  getDefaultOutboundNumber(): StoredVirtualNumber | undefined {
+    const numbers = this.data.virtualNumbers || [];
+    return numbers.find((n) => n.isDefaultOutbound && n.status === "active") || numbers.find((n) => n.status === "active");
+  }
+
+  createVirtualNumber(
+    item: Omit<StoredVirtualNumber, "id" | "createdAt" | "updatedAt"> & { id?: string }
+  ): StoredVirtualNumber {
+    if (!this.data.virtualNumbers) this.data.virtualNumbers = [];
+
+    const normalizedPhone = item.phoneNumber.trim();
+    const id = item.id || `vn_${item.provider}_${nanoid(8)}`;
+    const now = new Date().toISOString();
+
+    if (item.isDefaultOutbound) {
+      this.data.virtualNumbers.forEach((n) => {
+        n.isDefaultOutbound = false;
+      });
+    }
+
+    const newNumber: StoredVirtualNumber = {
+      ...item,
+      id,
+      phoneNumber: normalizedPhone,
+      webhookUrl: item.webhookUrl || `/api/calling/virtual-numbers/${id}/inbound`,
+      stats: item.stats || {
+        totalCalls: 0,
+        inboundCalls: 0,
+        outboundCalls: 0,
+        activeChannels: 0,
+      },
+      validation: item.validation || {
+        status: "unverified",
+      },
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    this.data.virtualNumbers.push(newNumber);
+    this.addAuditLog(
+      "Virtual Number Added",
+      "System Admin",
+      `Added virtual phone number ${normalizedPhone} (${item.friendlyName}) on provider ${item.provider}.`,
+      "carrier"
+    );
+    this.save(this.data);
+    return newNumber;
+  }
+
+  updateVirtualNumber(id: string, updates: Partial<StoredVirtualNumber>): StoredVirtualNumber | null {
+    if (!this.data.virtualNumbers) return null;
+    const idx = this.data.virtualNumbers.findIndex((n) => n.id === id);
+    if (idx === -1) return null;
+
+    if (updates.isDefaultOutbound) {
+      this.data.virtualNumbers.forEach((n) => {
+        if (n.id !== id) n.isDefaultOutbound = false;
+      });
+    }
+
+    const current = this.data.virtualNumbers[idx];
+    const updated: StoredVirtualNumber = {
+      ...current,
+      ...updates,
+      id: current.id,
+      createdAt: current.createdAt,
+      updatedAt: new Date().toISOString(),
+    };
+
+    this.data.virtualNumbers[idx] = updated;
+    this.save(this.data);
+    return updated;
+  }
+
+  deleteVirtualNumber(id: string): boolean {
+    if (!this.data.virtualNumbers) return false;
+    const initialLen = this.data.virtualNumbers.length;
+    const target = this.data.virtualNumbers.find((n) => n.id === id);
+    this.data.virtualNumbers = this.data.virtualNumbers.filter((n) => n.id !== id);
+
+    if (this.data.virtualNumbers.length < initialLen) {
+      if (target) {
+        this.addAuditLog(
+          "Virtual Number Removed",
+          "System Admin",
+          `Deleted virtual number ${target.phoneNumber} (${target.friendlyName}).`,
+          "carrier"
+        );
+      }
+      this.save(this.data);
+      return true;
+    }
+    return false;
+  }
+
+  setVirtualNumberStatus(id: string, status: "active" | "inactive" | "pending_validation" | "error"): StoredVirtualNumber | null {
+    return this.updateVirtualNumber(id, { status });
+  }
+
+  setDefaultOutboundNumber(id: string): StoredVirtualNumber | null {
+    return this.updateVirtualNumber(id, { isDefaultOutbound: true, status: "active" });
+  }
+
+  recordVirtualNumberCall(idOrPhone: string, direction: "inbound" | "outbound"): void {
+    if (!this.data.virtualNumbers) return;
+    const target =
+      this.data.virtualNumbers.find((n) => n.id === idOrPhone) ||
+      this.getVirtualNumberByPhone(idOrPhone);
+
+    if (target) {
+      target.stats.totalCalls = (target.stats.totalCalls || 0) + 1;
+      if (direction === "inbound") {
+        target.stats.inboundCalls = (target.stats.inboundCalls || 0) + 1;
+      } else {
+        target.stats.outboundCalls = (target.stats.outboundCalls || 0) + 1;
+      }
+      target.stats.lastCallAt = new Date().toISOString();
+      this.save(this.data);
+    }
   }
 }
 

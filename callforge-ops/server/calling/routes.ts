@@ -79,6 +79,7 @@ import { agentRuntime, DEFAULT_AGENT_PERSONA, AVAILABLE_PERSONAS } from "./runti
 import { localKnowledgeBase } from "./runtime/rag/localKnowledgeBase";
 import { BUILTIN_BANKING_TOOLS } from "./runtime/tools/bankingTools";
 import { saveCallToPostgres, getCallSummariesFromPostgres } from "../db/postgres";
+import { virtualNumberService } from "./virtualNumbers";
 
 export const callingRouter = Router();
 
@@ -1440,14 +1441,28 @@ callingRouter.get("/automation/whatsapp/logs", (_req: Request, res: Response) =>
 });
 
 // POST /api/calling/webhooks/voice/twiml (Twilio Programmable Voice SIP Inbound & Media Stream)
-callingRouter.post("/webhooks/voice/twiml", (req: Request, res: Response) => {
+callingRouter.post("/webhooks/voice/twiml", async (req: Request, res: Response) => {
   const host = req.headers.host || "localhost:3000";
   const wsProtocol = req.secure || req.headers["x-forwarded-proto"] === "https" ? "wss" : "ws";
-  const streamUrl = `${wsProtocol}://${host}/media-stream`;
+  const toPhone = req.body.To || req.body.Called || "";
+
+  // Resolve virtual number configuration by destination dialed phone
+  const virtualNumber = toPhone ? await virtualNumberService.getNumberByPhone(toPhone) : null;
+  const agentId = virtualNumber?.assignedAgentId || "agent_aarogya_dental";
+  const greeting =
+    virtualNumber?.inboundRouting?.greetingMessage ||
+    "Namaste! Welcome to CallForge AI Telephony Suite. Connecting your real-time AI assistant now.";
+  const lang = virtualNumber?.inboundRouting?.voiceLanguage || "hi-IN";
+
+  if (virtualNumber) {
+    persistentStore.recordVirtualNumberCall(virtualNumber.id, "inbound");
+  }
+
+  const streamUrl = `${wsProtocol}://${host}/media-stream?agentId=${agentId}&to=${encodeURIComponent(toPhone)}`;
 
   const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
-  <Say voice="Polly.Aditi" language="hi-IN">Namaste! Welcome to CallForge AI Telephony Suite. Connecting your real-time AI assistant now.</Say>
+  <Say voice="Polly.Aditi" language="${lang}">${greeting}</Say>
   <Connect>
     <Stream url="${streamUrl}" />
   </Connect>
@@ -2008,38 +2023,244 @@ callingRouter.get("/core-engine/agents", (_req: Request, res: Response) => {
   res.json({ agents, total: agents.length });
 });
 
-// GET /api/calling/virtual-number/status
-// Indicates virtual number readiness & guidelines
-callingRouter.get("/virtual-number/status", (_req: Request, res: Response) => {
-  const hasTwilioNumber = Boolean(process.env.TWILIO_PHONE_NUMBER);
-  const hasExotelNumber = Boolean(process.env.EXOTEL_CALLER_ID);
-  const hasTataTrunk = Boolean(process.env.TATA_SIP_TRUNK);
+// =============================================================================
+// VIRTUAL NUMBER MANAGEMENT MODULE ENDPOINTS
+// =============================================================================
 
-  const isConfigured = hasTwilioNumber || hasExotelNumber || hasTataTrunk;
+// GET /api/calling/virtual-number/status
+// Indicates virtual number readiness, active counts, and current routing
+callingRouter.get("/virtual-number/status", async (_req: Request, res: Response) => {
+  const numbers = await virtualNumberService.listNumbers();
+  const activeNumbers = numbers.filter((n) => n.status === "active");
+  const defaultOutbound = await virtualNumberService.getDefaultOutboundNumber();
 
   res.json({
-    status: isConfigured ? "configured" : "deferred_pending",
-    virtualNumberPending: !isConfigured,
-    message: isConfigured
-      ? "Virtual number is provisioned and ready for telecom routing."
-      : "Virtual number (DID) is deferred as requested. The system is operating in Browser Voice Mode and Interactive Sandbox Mode. Add your number anytime in .env or Settings.",
-    currentTrunk: process.env.DEFAULT_TELEPHONY_PROVIDER || "tata_smartflo",
-    carriers: {
-      tata_smartflo: {
-        configured: hasTataTrunk,
-        trunk: process.env.TATA_SIP_TRUNK || "sip.tatasmartflo.com:5060",
-      },
-      twilio: {
-        configured: hasTwilioNumber,
-        callerId: process.env.TWILIO_PHONE_NUMBER || "Pending DID",
-      },
-      exotel: {
-        configured: hasExotelNumber,
-        callerId: process.env.EXOTEL_CALLER_ID || "Pending DID",
-      },
-    },
+    status: activeNumbers.length > 0 ? "configured" : "deferred_pending",
+    virtualNumberPending: activeNumbers.length === 0,
+    activeCount: activeNumbers.length,
+    totalCount: numbers.length,
+    defaultOutboundPhone: defaultOutbound?.phoneNumber || null,
+    message:
+      activeNumbers.length > 0
+        ? `${activeNumbers.length} virtual number(s) actively provisioned and routed to AI agents.`
+        : "Virtual numbers can be provisioned in the Virtual Numbers tab or configured via carrier credentials.",
+    currentTrunk: defaultOutbound?.provider || process.env.DEFAULT_TELEPHONY_PROVIDER || "tata_smartflo",
+    numbers: activeNumbers.map((n) => ({
+      id: n.id,
+      phone: n.phoneNumber,
+      provider: n.provider,
+      assignedAgentId: n.assignedAgentId,
+      friendlyName: n.friendlyName,
+      isDefault: n.isDefaultOutbound,
+    })),
     browserVoiceAvailable: true,
   });
+});
+
+// GET /api/calling/virtual-numbers
+// Returns all virtual numbers with optional filter by provider/status/agentId
+callingRouter.get("/virtual-numbers", async (req: Request, res: Response) => {
+  const { provider, status, agentId } = req.query;
+  const numbers = await virtualNumberService.listNumbers({
+    provider: provider as string,
+    status: status as string,
+    agentId: agentId as string,
+  });
+
+  const defaultOutbound = await virtualNumberService.getDefaultOutboundNumber();
+  const summary = {
+    total: numbers.length,
+    active: numbers.filter((n) => n.status === "active").length,
+    inboundOnly: numbers.filter((n) => n.type === "inbound").length,
+    outboundOnly: numbers.filter((n) => n.type === "outbound").length,
+    bidirectional: numbers.filter((n) => n.type === "bidirectional").length,
+    defaultOutboundPhone: defaultOutbound?.phoneNumber || null,
+    totalCallsHandled: numbers.reduce((sum, n) => sum + (n.stats?.totalCalls || 0), 0),
+  };
+
+  res.json({ success: true, numbers, summary });
+});
+
+// GET /api/calling/virtual-numbers/default
+// Returns the default active outbound virtual number
+callingRouter.get("/virtual-numbers/default", async (_req: Request, res: Response) => {
+  const number = await virtualNumberService.getDefaultOutboundNumber();
+  res.json({ success: true, number: number || null });
+});
+
+// GET /api/calling/virtual-numbers/:id
+// Returns single virtual number details
+callingRouter.get("/virtual-numbers/:id", async (req: Request, res: Response) => {
+  const number = await virtualNumberService.getNumberById(req.params.id);
+  if (!number) {
+    return res.status(404).json({ success: false, error: "Virtual number not found" });
+  }
+  res.json({ success: true, number });
+});
+
+// POST /api/calling/virtual-numbers
+// Creates / provisions a new virtual number with configurable provider and AI agent routing
+callingRouter.post("/virtual-numbers", async (req: Request, res: Response) => {
+  const {
+    phoneNumber,
+    friendlyName,
+    provider,
+    type,
+    assignedAgentId,
+    inboundRouting,
+    providerConfig,
+    isDefaultOutbound,
+    capabilities,
+  } = req.body;
+
+  if (!phoneNumber || !friendlyName || !provider) {
+    return res.status(400).json({
+      success: false,
+      error: "phoneNumber, friendlyName, and provider are required.",
+    });
+  }
+
+  const result = await virtualNumberService.createNumber({
+    phoneNumber,
+    friendlyName,
+    provider,
+    type,
+    assignedAgentId,
+    inboundRouting,
+    providerConfig,
+    isDefaultOutbound,
+    capabilities,
+  });
+
+  if (!result.success) {
+    return res.status(400).json(result);
+  }
+
+  res.status(201).json(result);
+});
+
+// PUT /api/calling/virtual-numbers/:id
+// Updates configuration, agent routing, or provider parameters
+callingRouter.put("/virtual-numbers/:id", async (req: Request, res: Response) => {
+  const result = await virtualNumberService.updateNumber(req.params.id, req.body);
+  if (!result.success) {
+    return res.status(400).json(result);
+  }
+  res.json(result);
+});
+
+// DELETE /api/calling/virtual-numbers/:id
+// Removes a virtual number
+callingRouter.delete("/virtual-numbers/:id", async (req: Request, res: Response) => {
+  const result = await virtualNumberService.deleteNumber(req.params.id);
+  if (!result.success) {
+    return res.status(404).json(result);
+  }
+  res.json({ success: true, message: "Virtual number removed successfully." });
+});
+
+// PATCH /api/calling/virtual-numbers/:id/status
+// Activates or deactivates a virtual number
+callingRouter.patch("/virtual-numbers/:id/status", async (req: Request, res: Response) => {
+  const { status } = req.body;
+  if (!status || !["active", "inactive", "pending_validation", "error"].includes(status)) {
+    return res.status(400).json({ success: false, error: "Invalid status value." });
+  }
+
+  const result = await virtualNumberService.setStatus(req.params.id, status);
+  if (!result.success) {
+    return res.status(404).json(result);
+  }
+  res.json(result);
+});
+
+// POST /api/calling/virtual-numbers/:id/set-default
+// Sets virtual number as default system outbound Caller ID
+callingRouter.post("/virtual-numbers/:id/set-default", async (req: Request, res: Response) => {
+  const result = await virtualNumberService.setDefaultOutbound(req.params.id);
+  if (!result.success) {
+    return res.status(404).json(result);
+  }
+  res.json(result);
+});
+
+// POST /api/calling/virtual-numbers/:id/validate
+// Runs live / simulated validation check against provider
+callingRouter.post("/virtual-numbers/:id/validate", async (req: Request, res: Response) => {
+  const result = await virtualNumberService.validateNumber(req.params.id);
+  res.json(result);
+});
+
+// POST /api/calling/virtual-numbers/test-call
+// Initiates simulated test call to test audio pipeline & assigned AI agent
+callingRouter.post("/virtual-numbers/test-call", async (req: Request, res: Response) => {
+  const { id, callerPhone, callerName } = req.body;
+  if (!id) {
+    return res.status(400).json({ success: false, error: "Virtual number id is required." });
+  }
+
+  try {
+    const result = await virtualNumberService.simulateInboundCall(id, callerPhone, callerName);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/calling/virtual-numbers/:id/inbound
+// Dedicated carrier inbound webhook target for this specific virtual number
+callingRouter.post("/virtual-numbers/:id/inbound", async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const number = await virtualNumberService.getNumberById(id);
+
+  if (!number) {
+    return res.status(404).type("text/xml").send("<Response><Reject /></Response>");
+  }
+
+  if (number.status !== "active") {
+    return res
+      .type("text/xml")
+      .send(
+        `<Response><Say voice="Polly.Aditi" language="hi-IN">This virtual number is currently inactive. Please contact your administrator.</Say><Hangup /></Response>`
+      );
+  }
+
+  // Record call stat
+  persistentStore.recordVirtualNumberCall(id, "inbound");
+
+  // Broadcast to Live Floor SSE broker
+  eventBroker.broadcast({
+    type: "call_update",
+    call: {
+      id: `in_${nanoid(8)}`,
+      customerPhone: req.body.From || "Inbound Caller",
+      customerName: "Inbound Customer",
+      provider: number.provider as any,
+      status: "ringing",
+      startedAt: new Date().toISOString(),
+      durationSeconds: 0,
+      sentiment: "neutral",
+    },
+  });
+
+  const host = req.headers.host || "localhost:3000";
+  const wsProtocol = req.secure || req.headers["x-forwarded-proto"] === "https" ? "wss" : "ws";
+  const streamUrl = `${wsProtocol}://${host}/media-stream?virtualNumberId=${id}&agentId=${number.assignedAgentId}`;
+
+  const greeting =
+    number.inboundRouting?.greetingMessage ||
+    "Namaste! Welcome to CallForge AI Assistant. Connecting your call now.";
+  const lang = number.inboundRouting?.voiceLanguage || "hi-IN";
+
+  const twiml = `<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say voice="Polly.Aditi" language="${lang}">${greeting}</Say>
+  <Connect>
+    <Stream url="${streamUrl}" />
+  </Connect>
+</Response>`;
+
+  res.type("text/xml").send(twiml);
 });
 
 // =============================================================================

@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { PhoneCall, ShieldCheck, Zap, Radio, Settings2, CheckCircle2 } from "lucide-react";
+import { PhoneCall, ShieldCheck, Zap, Radio, Settings2, CheckCircle2, Phone, Hash } from "lucide-react";
 import { CarrierConfigModal } from "../global/CarrierConfigModal";
 
-export const CarrierConfigCard: React.FC = () => {
+interface CarrierConfigCardProps {
+  onNavigate?: (tab: string) => void;
+}
+
+export const CarrierConfigCard: React.FC<CarrierConfigCardProps> = ({ onNavigate }) => {
   const [config, setConfig] = useState<{
     provider: string;
     twilioAccountSid?: string;
@@ -12,9 +16,14 @@ export const CarrierConfigCard: React.FC = () => {
     updatedAt?: string;
   }>({
     provider: "tata_smartflo",
-    tataCallerId: "+91 22 6600 1234",
-    twilioCallerId: "+18005550199",
+    tataCallerId: "09513XXXXXXX",
+    twilioCallerId: "09513XXXXXXX",
   });
+  const [virtualStatus, setVirtualStatus] = useState<{
+    activeCount?: number;
+    totalCount?: number;
+    defaultOutboundPhone?: string;
+  }>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchConfig = () => {
@@ -22,6 +31,13 @@ export const CarrierConfigCard: React.FC = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data) setConfig(data);
+      })
+      .catch(() => {});
+
+    fetch("/api/calling/virtual-number/status")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data) setVirtualStatus(data);
       })
       .catch(() => {});
   };
@@ -45,14 +61,27 @@ export const CarrierConfigCard: React.FC = () => {
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setIsModalOpen(true)}
-          className="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
-        >
-          <Settings2 size={13} />
-          <span>Configure Carrier Trunks</span>
-        </button>
+        <div className="flex items-center gap-2">
+          {onNavigate && (
+            <button
+              type="button"
+              onClick={() => onNavigate("Virtual Numbers")}
+              className="px-3 py-1.5 rounded-lg bg-emerald-950/60 hover:bg-emerald-900/60 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+            >
+              <Phone size={13} />
+              <span>Virtual Numbers ({virtualStatus.totalCount || 3})</span>
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={() => setIsModalOpen(true)}
+            className="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+          >
+            <Settings2 size={13} />
+            <span>Configure Carrier Trunks</span>
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
@@ -82,7 +111,7 @@ export const CarrierConfigCard: React.FC = () => {
             Outbound Caller ID
           </span>
           <p className="font-mono font-bold text-zinc-200">
-            {config.tataCallerId || config.twilioCallerId || "+91 22 6600 1234"}
+            {virtualStatus.defaultOutboundPhone || config.tataCallerId || config.twilioCallerId || "09513XXXXXXX"}
           </p>
           <span className="text-[10px] text-zinc-500">TRAI CLI & E.164 compliant</span>
         </div>

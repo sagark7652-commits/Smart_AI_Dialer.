@@ -2058,13 +2058,60 @@ async def send_call_dtmf(call_id: str, payload: Dict[str, Any]):
     return {"status": "success", "call_id": call_id, "result": res}
 
 
+# ============================================================================
+# VIRTUAL NUMBER MANAGEMENT & CORE ENGINE ROUTING
+# ============================================================================
 
+VIRTUAL_NUMBERS_STORE: List[Dict[str, Any]] = [
+    {
+        "id": "vn_tata_dental_01",
+        "phone_number": "09513XXXXXXX",
+        "friendly_name": "Tata Smartflo DID - Priya (Aarogya Dental)",
+        "provider": "tata_smartflo",
+        "status": "active",
+        "type": "bidirectional",
+        "assigned_agent_id": "agent_aarogya_dental",
+        "greeting": "Namaste! Welcome to Aarogya Dental Care. Main Priya bol rahi hoon, bataiye main aapki kya help kar sakti hoon?",
+        "language": "hi",
+        "is_default": True,
+    },
+    {
+        "id": "vn_twilio_us_02",
+        "phone_number": "+18005550199",
+        "friendly_name": "CallForge Toll-Free Banking (Aarti)",
+        "provider": "twilio",
+        "status": "active",
+        "type": "bidirectional",
+        "assigned_agent_id": "agent_tata_banking_01",
+        "greeting": "Namaste! Welcome to CallForge Banking Services on a recorded line.",
+        "language": "hi-IN",
+        "is_default": False,
+    },
+]
+
+@app.get("/virtual-numbers")
+async def list_core_virtual_numbers():
+    """List all virtual numbers and their agent routing in Python Core Engine."""
+    return {"status": "success", "numbers": VIRTUAL_NUMBERS_STORE, "total": len(VIRTUAL_NUMBERS_STORE)}
+
+@app.post("/virtual-numbers")
+async def register_core_virtual_number(number_data: Dict[str, Any]):
+    """Register or update a virtual number in Python Core Engine."""
+    phone = str(number_data.get("phone_number", "")).strip()
+    if not phone:
+        raise HTTPException(status_code=400, detail="Missing phone_number.")
+
+    for idx, item in enumerate(VIRTUAL_NUMBERS_STORE):
+        if item.get("phone_number") == phone or item.get("id") == number_data.get("id"):
+            VIRTUAL_NUMBERS_STORE[idx].update(number_data)
+            return {"status": "updated", "number": VIRTUAL_NUMBERS_STORE[idx]}
+
+    VIRTUAL_NUMBERS_STORE.append(number_data)
+    return {"status": "created", "number": number_data}
 
 
 # ============================================================================
-
 # WEBSOCKET STREAMING AUDIO HANDLERS
-
 # ============================================================================
 
 

@@ -73,6 +73,7 @@ import { SystemStatusPage } from "../components/calling/admin/SystemStatusPage";
 import { CarrierConfigCard } from "../components/calling/admin/CarrierConfigCard";
 import { BillingHub } from "../components/calling/billing/BillingHub";
 import { AdminHub } from "../components/calling/admin/AdminHub";
+import { VirtualNumberManagement } from "../components/calling/numbers/VirtualNumberManagement";
 
 // New Rich Functional Components
 import { CommandPaletteModal } from "../components/calling/global/CommandPaletteModal";
@@ -95,6 +96,7 @@ const navigation = [
   { label: "AI Voice Studio", icon: Bot },
   { label: "Live Floor", icon: Radio },
   { label: "Call Logs (CDR)", icon: FileText },
+  { label: "Virtual Numbers", icon: PhoneCall },
   { label: "IVR Designer", icon: Workflow },
   { label: "Compliance", icon: ShieldCheck },
   { label: "Admin & Billing", icon: Settings2 },
@@ -1698,6 +1700,13 @@ export default function Home() {
         </div>
       );
       break;
+    case "Virtual Numbers":
+      content = (
+        <div className="page-enter space-y-4">
+          <VirtualNumberManagement />
+        </div>
+      );
+      break;
     case "IVR Designer":
       content = (
         <div className="page-enter space-y-4">
@@ -1760,7 +1769,7 @@ export default function Home() {
           {adminBillingSubTab === "billing" ? (
             <BillingHub onUpgradePlanClick={() => setShowProUpgrade(true)} />
           ) : (
-            <AdminHub />
+            <AdminHub onNavigate={setActive} />
           )}
         </div>
       );

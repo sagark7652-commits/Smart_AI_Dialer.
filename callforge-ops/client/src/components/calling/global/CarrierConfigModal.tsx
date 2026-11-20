@@ -40,7 +40,7 @@ export function CarrierConfigModal({ isOpen, onClose, onSaved }: CarrierConfigMo
   // Tata Dialer & NVIDIA Riva Fields
   const [tataApiKey, setTataApiKey] = useState("");
   const [tataToken, setTataToken] = useState("");
-  const [tataCallerId, setTataCallerId] = useState("+91 22 6600 1234");
+  const [tataCallerId, setTataCallerId] = useState("09513XXXXXXX");
   const [tataSipTrunk, setTataSipTrunk] = useState("sip.tatasmartflo.com:5060");
   const [rivaServerUrl, setRivaServerUrl] = useState("grpc://riva-speech.internal.callforge:50051");
   const [showTataToken, setShowTataToken] = useState(false);

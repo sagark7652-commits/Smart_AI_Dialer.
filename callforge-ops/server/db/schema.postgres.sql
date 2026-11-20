@@ -912,3 +912,31 @@ SELECT
     ce.created_at
 FROM call_events ce
 ORDER BY ce.created_at;
+
+
+-- ============================================================================
+-- VIRTUAL NUMBERS MANAGEMENT SCHEMA
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS virtual_numbers (
+    id VARCHAR(100) PRIMARY KEY,
+    phone_number VARCHAR(30) UNIQUE NOT NULL,
+    friendly_name VARCHAR(150) NOT NULL,
+    provider VARCHAR(50) NOT NULL, -- 'tata_smartflo', 'twilio', 'exotel', 'custom_sip'
+    status VARCHAR(30) NOT NULL DEFAULT 'active', -- 'active', 'inactive', 'pending_validation', 'error'
+    type VARCHAR(30) NOT NULL DEFAULT 'bidirectional', -- 'inbound', 'outbound', 'bidirectional'
+    capabilities JSONB DEFAULT '["voice", "recording"]'::jsonb,
+    assigned_agent_id VARCHAR(100) DEFAULT 'agent_aarogya_dental',
+    inbound_routing JSONB DEFAULT '{"routeType": "ai_agent", "recordCalls": true}'::jsonb,
+    provider_config JSONB DEFAULT '{}'::jsonb,
+    webhook_url TEXT,
+    is_default_outbound BOOLEAN DEFAULT FALSE,
+    stats JSONB DEFAULT '{"totalCalls": 0, "inboundCalls": 0, "outboundCalls": 0, "activeChannels": 0}'::jsonb,
+    validation JSONB DEFAULT '{"status": "unverified"}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_virtual_numbers_phone ON virtual_numbers(phone_number);
+CREATE INDEX IF NOT EXISTS idx_virtual_numbers_provider ON virtual_numbers(provider);
+CREATE INDEX IF NOT EXISTS idx_virtual_numbers_agent ON virtual_numbers(assigned_agent_id);

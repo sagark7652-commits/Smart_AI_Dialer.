@@ -1,7 +1,7 @@
 {
   "leads": [
     {
-      "id": "lead_vaBDunGM",
+      "id": "lead_wnti3SRn",
       "name": "Rohit Deshmukh",
       "phone": "+91 99887 76655",
       "company": "Deshmukh Tech",
@@ -11,7 +11,38 @@
       "last": "10 mins ago",
       "isDnc": true,
       "notes": [
-        "[Statutory NDNC] Opted out by customer during AI voice call on 5/11/2026."
+        "[Statutory NDNC] Opted out by customer during AI voice call on 21/11/2026."
+      ],
+      "createdAt": "2026-11-20T19:34:09.571Z"
+    },
+    {
+      "id": "lead_gemrU16J",
+      "name": "Vikram Malhotra",
+      "phone": "+91 98111 22334",
+      "company": "Malhotra Enterprises",
+      "source": "Inbound Call",
+      "stage": "Qualified",
+      "score": 85,
+      "last": "Just now",
+      "isDnc": false,
+      "notes": [
+        "[Voice AI Agent] Balance queried: ₹50,000"
+      ],
+      "createdAt": "2026-11-20T19:34:09.547Z"
+    },
+    {
+      "id": "lead_vaBDunGM",
+      "name": "Rohit Deshmukh",
+      "phone": "+91 99887 76655",
+      "company": "Deshmukh Tech",
+      "source": "Outbound Blast",
+      "stage": "Callback",
+      "score": 40,
+      "last": "Callback scheduled for 21/11/2026, 1:04:02 am",
+      "isDnc": true,
+      "notes": [
+        "[Statutory NDNC] Opted out by customer during AI voice call on 5/11/2026.",
+        "[Automated AI Reminder] Customer requested callback: Customer requested callback in 2 days scheduled for 21/11/2026, 1:04:02 am"
       ],
       "createdAt": "2026-11-05T02:54:28.237Z"
     },
@@ -485,14 +516,15 @@
     }
   ],
   "carrierConfig": {
-    "provider": "mock",
+    "provider": "tata_smartflo",
     "twilioAccountSid": "",
     "twilioAuthToken": "",
-    "twilioCallerId": "+18005550199",
+    "twilioCallerId": "09513XXXXXXX",
     "exotelApiKey": "",
     "exotelApiToken": "",
     "exotelSid": "",
-    "updatedAt": "2026-11-04T17:31:00.744Z"
+    "updatedAt": "2026-11-20T19:57:40.910Z",
+    "tataCallerId": "09513XXXXXXX"
   },
   "subscription": {
     "planId": "plan_starter",
@@ -630,6 +662,411 @@
   "invoices": [],
   "teamMembers": [],
   "auditLogs": [
+    {
+      "id": "log_RdJ-X_Of",
+      "action": "Virtual Number Removed",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:57:40.912Z",
+      "details": "Deleted virtual number +918044556677 (Bengaluru Priority Care Desk).",
+      "category": "carrier"
+    },
+    {
+      "id": "log_AwxOsdZw",
+      "action": "Default Outbound Number Changed",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:57:40.911Z",
+      "details": "Set 09513XXXXXXX (Tata Smartflo DID - Priya (Aarogya Dental)) on provider tata_smartflo as system-wide default Caller ID.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_0Ns0JyFy",
+      "action": "Default Outbound Number Changed",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:57:40.909Z",
+      "details": "Set +918044556677 (Bengaluru Priority Care Desk) on provider custom_sip as system-wide default Caller ID.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_kmgU6KRb",
+      "action": "Virtual Number Activated",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:57:40.907Z",
+      "details": "Virtual number +918044556677 status changed to active.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_6htbjsOW",
+      "action": "Virtual Number Deactivated",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:57:40.906Z",
+      "details": "Virtual number +918044556677 status changed to inactive.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_TLNPwYgP",
+      "action": "Virtual Number Added",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:57:40.901Z",
+      "details": "Added virtual phone number +918044556677 (Bengaluru Sales Hotline) on provider custom_sip.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_euCE4h5-",
+      "action": "Virtual Number Removed",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:56:12.315Z",
+      "details": "Deleted virtual number +918044556677 (Bengaluru Priority Care Desk).",
+      "category": "carrier"
+    },
+    {
+      "id": "log_iQ4bv2uv",
+      "action": "Default Outbound Number Changed",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:56:12.314Z",
+      "details": "Set 09513XXXXXXX (Tata Smartflo DID - Priya (Aarogya Dental)) on provider tata_smartflo as system-wide default Caller ID.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_lqwMlqZY",
+      "action": "Default Outbound Number Changed",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:56:12.312Z",
+      "details": "Set +918044556677 (Bengaluru Priority Care Desk) on provider custom_sip as system-wide default Caller ID.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_b17EnjW3",
+      "action": "Virtual Number Activated",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:56:12.310Z",
+      "details": "Virtual number +918044556677 status changed to active.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_DRtoIxjK",
+      "action": "Virtual Number Deactivated",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:56:12.308Z",
+      "details": "Virtual number +918044556677 status changed to inactive.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_snSAoLph",
+      "action": "Virtual Number Added",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:56:12.303Z",
+      "details": "Added virtual phone number +918044556677 (Bengaluru Sales Hotline) on provider custom_sip.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_eF3T5Pqp",
+      "action": "Virtual Number Removed",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:55:30.467Z",
+      "details": "Deleted virtual number +918044556677 (Bengaluru Priority Care Desk).",
+      "category": "carrier"
+    },
+    {
+      "id": "log_vDoSM4ew",
+      "action": "Default Outbound Number Changed",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:55:30.466Z",
+      "details": "Set 09513XXXXXXX (Tata Smartflo DID - Priya (Aarogya Dental)) on provider tata_smartflo as system-wide default Caller ID.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_B2k2wXSA",
+      "action": "Default Outbound Number Changed",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:55:30.465Z",
+      "details": "Set +918044556677 (Bengaluru Priority Care Desk) on provider custom_sip as system-wide default Caller ID.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_1E3QF3zp",
+      "action": "Virtual Number Activated",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:55:30.462Z",
+      "details": "Virtual number +918044556677 status changed to active.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_5bN8rXaM",
+      "action": "Virtual Number Deactivated",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:55:30.461Z",
+      "details": "Virtual number +918044556677 status changed to inactive.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_MkDzTADn",
+      "action": "Virtual Number Added",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:55:30.450Z",
+      "details": "Added virtual phone number +918044556677 (Bengaluru Sales Hotline) on provider custom_sip.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_4xrKpmsN",
+      "action": "Virtual Number Removed",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:50:50.258Z",
+      "details": "Deleted virtual number +918044556677 (Bengaluru Priority Care Desk).",
+      "category": "carrier"
+    },
+    {
+      "id": "log_leFZKE9h",
+      "action": "Default Outbound Number Changed",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:50:50.257Z",
+      "details": "Set +912266001234 (Pune Dental Care Inbound (Priya)) on provider tata_smartflo as system-wide default Caller ID.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_xKharMGh",
+      "action": "Default Outbound Number Changed",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:50:50.256Z",
+      "details": "Set +918044556677 (Bengaluru Priority Care Desk) on provider custom_sip as system-wide default Caller ID.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_W99w02Yl",
+      "action": "Virtual Number Activated",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:50:50.254Z",
+      "details": "Virtual number +918044556677 status changed to active.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_wQccNhqD",
+      "action": "Virtual Number Deactivated",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:50:50.253Z",
+      "details": "Virtual number +918044556677 status changed to inactive.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_GI1VgzSH",
+      "action": "Virtual Number Added",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:50:50.248Z",
+      "details": "Added virtual phone number +918044556677 (Bengaluru Sales Hotline) on provider custom_sip.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_hIlV83tE",
+      "action": "Callback Scheduled",
+      "user": "AI Calling Agent",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:49:36.738Z",
+      "details": "Scheduled autonomous follow-up call to Sunil Patil (+91 98111 22233) for 23/11/2026, 1:19:36 am.",
+      "category": "campaign"
+    },
+    {
+      "id": "log_si1tbiLU",
+      "action": "Callback Scheduled",
+      "user": "AI Calling Agent",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:49:36.733Z",
+      "details": "Scheduled autonomous follow-up call to Sunil Patil (+91 98111 22233) for 23/11/2026, 1:19:36 am.",
+      "category": "campaign"
+    },
+    {
+      "id": "log_oaPQ7a0Y",
+      "action": "Plan Activation Requested",
+      "user": "SwiftTel AI Agent",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:49:36.727Z",
+      "details": "Plan activation initiated for Sunil Patil (+91 98111 22233) - Plan: SwiftTel 5G Annual ₹1,999",
+      "category": "system"
+    },
+    {
+      "id": "log_PW-2_J5-",
+      "action": "Callback Scheduled",
+      "user": "AI Calling Agent",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:49:36.717Z",
+      "details": "Scheduled autonomous follow-up call to Anita Joshi (+91 98765 43210) for 22/11/2026, 1:19:36 am.",
+      "category": "campaign"
+    },
+    {
+      "id": "log_AiVKgA2W",
+      "action": "WhatsApp Follow-up Sent",
+      "user": "Arjun Mehta (Automated)",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:49:36.698Z",
+      "details": "Delivered template 'Aarogya Dental Appointment Confirmation' to +91 98765 43210 (Anita Joshi).",
+      "category": "campaign"
+    },
+    {
+      "id": "log_cO4HR19g",
+      "action": "Callback Scheduled",
+      "user": "AI Calling Agent",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:49:36.681Z",
+      "details": "Scheduled autonomous follow-up call to Rajesh Varma (+91 98201 55432) for 23/11/2026, 1:19:36 am.",
+      "category": "campaign"
+    },
+    {
+      "id": "log_GvSkuK8g",
+      "action": "Plan Details Dispatched",
+      "user": "SwiftTel AI Agent",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:49:36.593Z",
+      "details": "Sent SwiftTel 5G Annual Plan (₹1,999 - 2.5GB/day + OTT) details via WHATSAPP to +91 98201 55432",
+      "category": "system"
+    },
+    {
+      "id": "log_Ycj2XLZT",
+      "action": "Virtual Number Removed",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:49:34.496Z",
+      "details": "Deleted virtual number +918044556677 (Bengaluru Priority Care Desk).",
+      "category": "carrier"
+    },
+    {
+      "id": "log_j-cnqQX9",
+      "action": "Default Outbound Number Changed",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:49:34.494Z",
+      "details": "Set +912266001234 (Pune Dental Care Inbound (Priya)) on provider tata_smartflo as system-wide default Caller ID.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_I5MmKEd3",
+      "action": "Default Outbound Number Changed",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:49:34.490Z",
+      "details": "Set +918044556677 (Bengaluru Priority Care Desk) on provider custom_sip as system-wide default Caller ID.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_5QtDaaBI",
+      "action": "Virtual Number Activated",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:49:34.485Z",
+      "details": "Virtual number +918044556677 status changed to active.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_7zDol1Zm",
+      "action": "Virtual Number Deactivated",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:49:34.482Z",
+      "details": "Virtual number +918044556677 status changed to inactive.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_8FHSJUe4",
+      "action": "Virtual Number Added",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:49:34.467Z",
+      "details": "Added virtual phone number +918044556677 (Bengaluru Sales Hotline) on provider custom_sip.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_IQ7p5hX3",
+      "action": "Virtual Number Removed",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:42:07.105Z",
+      "details": "Deleted virtual number +918044556677 (Bengaluru Priority Care Desk).",
+      "category": "carrier"
+    },
+    {
+      "id": "log_mdwDuwfX",
+      "action": "Default Outbound Number Changed",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:42:07.103Z",
+      "details": "Set +912266001234 (Pune Dental Care Inbound (Priya)) on provider tata_smartflo as system-wide default Caller ID.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_54P3RBVG",
+      "action": "Default Outbound Number Changed",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:42:07.100Z",
+      "details": "Set +918044556677 (Bengaluru Priority Care Desk) on provider custom_sip as system-wide default Caller ID.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_pNRaTYMh",
+      "action": "Virtual Number Activated",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:42:07.095Z",
+      "details": "Virtual number +918044556677 status changed to active.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_LzIjrDbw",
+      "action": "Virtual Number Deactivated",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:42:07.093Z",
+      "details": "Virtual number +918044556677 status changed to inactive.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_IxbtTtLB",
+      "action": "Virtual Number Added",
+      "user": "System Admin",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:42:07.083Z",
+      "details": "Added virtual phone number +918044556677 (Bengaluru Sales Hotline) on provider custom_sip.",
+      "category": "carrier"
+    },
+    {
+      "id": "log_w8aDq7aG",
+      "action": "WhatsApp Follow-up Sent",
+      "user": "Arjun Mehta (Automated)",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:34:09.578Z",
+      "details": "Delivered template 'Tata Smartflo UPI Payment Dispatch' to +91 98200 11223 (Anjali Gupta).",
+      "category": "campaign"
+    },
+    {
+      "id": "log_pH33TVPX",
+      "action": "Callback Scheduled",
+      "user": "AI Calling Agent",
+      "ip": "10.107.157.9",
+      "timestamp": "2026-11-20T19:34:07.038Z",
+      "details": "Scheduled autonomous follow-up call to Ramesh Sharma (+919988776655) for 21/11/2026, 1:04:02 am.",
+      "category": "campaign"
+    },
     {
       "id": "log_gnXwk6Bp",
       "action": "WhatsApp Follow-up Sent",
@@ -966,6 +1403,26 @@
   ],
   "whatsappLogs": [
     {
+      "id": "wa_SlTAdjfJ",
+      "recipientName": "Anita Joshi",
+      "recipientPhone": "+91 98765 43210",
+      "templateName": "Aarogya Dental Appointment Confirmation",
+      "body": "Namaste Anita Joshi! Your appointment at Aarogya Dental Care for General Dental Consultation is confirmed for Tuesday at 11:00 AM. Doctor: Dr. Sharma. Location: FC Road, Shivaji Nagar, Pune.",
+      "status": "delivered",
+      "timestamp": "2026-11-20T19:49:36.698Z",
+      "disposition": "Interested"
+    },
+    {
+      "id": "wa_ax4XxllD",
+      "recipientName": "Anjali Gupta",
+      "recipientPhone": "+91 98200 11223",
+      "templateName": "Tata Smartflo UPI Payment Dispatch",
+      "body": "Your secure payment link for ₹4,850: https://pay.tatasmartflo.in/quickpay/txn_1795203249578",
+      "status": "delivered",
+      "timestamp": "2026-11-20T19:34:09.578Z",
+      "disposition": "Interested"
+    },
+    {
       "id": "wa_DqbGusFo",
       "recipientName": "Sumit",
       "recipientPhone": "9820155432",
@@ -1238,6 +1695,61 @@
   ],
   "scheduledCallbacks": [
     {
+      "id": "cb_VczAECNE",
+      "customerName": "Sunil Patil",
+      "customerPhone": "+91 98111 22233",
+      "scheduledAt": "2026-11-22T19:49:36.738Z",
+      "reason": "Customer requested callback in 2 days",
+      "requestedBy": "customer",
+      "notes": "Automated callback scheduled by AI Voice Assistant for Sunil Patil.",
+      "status": "pending",
+      "createdAt": "2026-11-20T19:49:36.738Z"
+    },
+    {
+      "id": "cb_FoyDINQA",
+      "customerName": "Sunil Patil",
+      "customerPhone": "+91 98111 22233",
+      "scheduledAt": "2026-11-22T19:49:36.733Z",
+      "reason": "Customer requested callback in 2 days",
+      "requestedBy": "customer",
+      "notes": "Automated callback scheduled by AI Voice Assistant for Sunil Patil.",
+      "status": "pending",
+      "createdAt": "2026-11-20T19:49:36.733Z"
+    },
+    {
+      "id": "cb_Hhhl9GUS",
+      "customerName": "Anita Joshi",
+      "customerPhone": "+91 98765 43210",
+      "scheduledAt": "2026-11-21T19:49:36.716Z",
+      "reason": "Customer requested callback in 1 days",
+      "requestedBy": "customer",
+      "notes": "Automated callback scheduled by AI Voice Assistant for Anita Joshi.",
+      "status": "pending",
+      "createdAt": "2026-11-20T19:49:36.717Z"
+    },
+    {
+      "id": "cb_2l8xDWkH",
+      "customerName": "Rajesh Varma",
+      "customerPhone": "+91 98201 55432",
+      "scheduledAt": "2026-11-22T19:49:36.598Z",
+      "reason": "Customer requested callback in 2 days",
+      "requestedBy": "customer",
+      "notes": "Automated callback scheduled by AI Voice Assistant for Rajesh Varma.",
+      "status": "pending",
+      "createdAt": "2026-11-20T19:49:36.599Z"
+    },
+    {
+      "id": "cb_5lFjJHbm",
+      "customerPhone": "+919988776655",
+      "customerName": "Ramesh Sharma",
+      "campaignId": "camp_dental_01",
+      "reason": "Customer requested callback in 2 days",
+      "scheduledAt": "2026-11-20T19:34:02.010Z",
+      "retryCount": 0,
+      "status": "completed",
+      "createdAt": "2026-11-20T19:34:07.012Z"
+    },
+    {
       "id": "cb_xBCxLLaW",
       "customerName": "Rajesh Varma",
       "customerPhone": "+91 98201 55432",
@@ -1346,5 +1858,136 @@
       "role": "Enterprise Admin",
       "updatedAt": "2026-11-05T04:00:00.391Z"
     }
-  }
+  },
+  "virtualNumbers": [
+    {
+      "id": "vn_tata_dental_01",
+      "phoneNumber": "09513XXXXXXX",
+      "friendlyName": "Tata Smartflo DID - Priya (Aarogya Dental)",
+      "provider": "tata_smartflo",
+      "status": "active",
+      "type": "bidirectional",
+      "capabilities": [
+        "voice",
+        "recording",
+        "realtime_streaming"
+      ],
+      "assignedAgentId": "agent_aarogya_dental",
+      "inboundRouting": {
+        "routeType": "ai_agent",
+        "greetingMessage": "Namaste! Welcome to Aarogya Dental Care. Main Priya bol rahi hoon, bataiye main aapki kya help kar sakti hoon?",
+        "voiceLanguage": "hi",
+        "recordCalls": true,
+        "businessHoursOnly": false
+      },
+      "providerConfig": {
+        "sipTrunk": "sip.tatasmartflo.com:5060",
+        "region": "Asia/Kolkata"
+      },
+      "webhookUrl": "/api/calling/virtual-numbers/vn_tata_dental_01/inbound",
+      "isDefaultOutbound": true,
+      "stats": {
+        "totalCalls": 154,
+        "inboundCalls": 110,
+        "outboundCalls": 44,
+        "lastCallAt": "2026-11-20T19:57:40.917Z",
+        "activeChannels": 0
+      },
+      "validation": {
+        "status": "verified",
+        "lastValidatedAt": "2026-11-20T19:57:40.913Z",
+        "carrierName": "Tata Teleservices Smartflo Cloud Gateway",
+        "latencyMs": 18,
+        "message": "Tata Smartflo SIP trunk handshake verified. NVIDIA Riva Magpie Speech Pipeline active."
+      },
+      "createdAt": "2026-11-13T19:42:06.990Z",
+      "updatedAt": "2026-11-20T19:57:40.913Z"
+    },
+    {
+      "id": "vn_twilio_us_02",
+      "phoneNumber": "+18005550199",
+      "friendlyName": "CallForge Toll-Free Banking (Aarti)",
+      "provider": "twilio",
+      "status": "active",
+      "type": "bidirectional",
+      "capabilities": [
+        "voice",
+        "sms",
+        "recording",
+        "realtime_streaming"
+      ],
+      "assignedAgentId": "agent_tata_banking_01",
+      "inboundRouting": {
+        "routeType": "ai_agent",
+        "greetingMessage": "Namaste! Welcome to CallForge Banking Services on a recorded line. How can I help you today?",
+        "voiceLanguage": "hi-IN",
+        "recordCalls": true,
+        "businessHoursOnly": false
+      },
+      "providerConfig": {
+        "region": "us1"
+      },
+      "webhookUrl": "/api/calling/virtual-numbers/vn_twilio_us_02/inbound",
+      "isDefaultOutbound": false,
+      "stats": {
+        "totalCalls": 89,
+        "inboundCalls": 65,
+        "outboundCalls": 24,
+        "lastCallAt": "2026-11-20T17:42:06.990Z",
+        "activeChannels": 0
+      },
+      "validation": {
+        "status": "verified",
+        "lastValidatedAt": "2026-11-20T19:57:40.915Z",
+        "carrierName": "Twilio Programmable Voice Gateway",
+        "latencyMs": 32,
+        "message": "Twilio Voice Webhook & Media Stream streaming endpoints verified."
+      },
+      "createdAt": "2026-11-15T19:42:06.990Z",
+      "updatedAt": "2026-11-20T19:57:40.915Z"
+    },
+    {
+      "id": "vn_exotel_blr_03",
+      "phoneNumber": "+918047104000",
+      "friendlyName": "Bengaluru Interactive IVR Gateway",
+      "provider": "exotel",
+      "status": "active",
+      "type": "inbound",
+      "capabilities": [
+        "voice",
+        "sms",
+        "recording"
+      ],
+      "assignedAgentId": "ivr_workflow",
+      "inboundRouting": {
+        "routeType": "ivr",
+        "ivrFlowId": "node-1",
+        "greetingMessage": "Welcome to CallForge Interactive IVR. Connecting to qualification desk.",
+        "voiceLanguage": "en-IN",
+        "recordCalls": true,
+        "businessHoursOnly": true
+      },
+      "providerConfig": {
+        "region": "in-south"
+      },
+      "webhookUrl": "/api/calling/virtual-numbers/vn_exotel_blr_03/inbound",
+      "isDefaultOutbound": false,
+      "stats": {
+        "totalCalls": 53,
+        "inboundCalls": 53,
+        "outboundCalls": 0,
+        "lastCallAt": "2026-11-20T15:42:06.990Z",
+        "activeChannels": 0
+      },
+      "validation": {
+        "status": "verified",
+        "carrierName": "Exotel India Voice Gateway",
+        "latencyMs": 25,
+        "message": "Exotel Flow Gather Webhook connected",
+        "lastValidatedAt": "2026-11-20T19:42:06.990Z"
+      },
+      "createdAt": "2026-11-17T19:42:06.990Z",
+      "updatedAt": "2026-11-20T19:42:06.990Z"
+    }
+  ]
 }

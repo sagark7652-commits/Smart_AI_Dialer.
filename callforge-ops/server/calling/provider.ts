@@ -1,4 +1,5 @@
 import { nanoid } from "nanoid";
+import { persistentStore } from "../storage/persistentStore";
 import {
   CallStatus,
   SupervisorActionType,
@@ -326,8 +327,24 @@ const twilio = new TwilioProvider();
 const tata = new TataDialerProvider();
 const mock = new MockTelephonyProvider();
 
+export function getDefaultCallerId(): string {
+  const defaultNum = persistentStore.getDefaultOutboundNumber();
+  if (defaultNum && defaultNum.status === "active") {
+    return defaultNum.phoneNumber;
+  }
+  const config = persistentStore.getCarrierConfig();
+  return config.tataCallerId || config.twilioCallerId || "+91 22 6600 1234";
+}
+
 export function getTelephonyProvider(name?: string): TelephonyProvider {
-  const p = (name || process.env.DEFAULT_TELEPHONY_PROVIDER || "tata_smartflo").toLowerCase();
+  let target = name;
+  if (!target) {
+    const defaultNum = persistentStore.getDefaultOutboundNumber();
+    if (defaultNum && defaultNum.status === "active") {
+      target = defaultNum.provider;
+    }
+  }
+  const p = (target || process.env.DEFAULT_TELEPHONY_PROVIDER || "tata_smartflo").toLowerCase();
   if (p === "tata" || p === "tata_smartflo" || p === "tata_dialer" || !p || p === "default") return tata;
   if (p === "twilio" || (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN)) return twilio;
   if (p === "exotel" || (process.env.EXOTEL_API_KEY && process.env.EXOTEL_API_TOKEN)) return exotel;

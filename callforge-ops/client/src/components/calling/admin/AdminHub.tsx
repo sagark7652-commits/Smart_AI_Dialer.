@@ -6,7 +6,11 @@ import { CarrierConfigCard } from "./CarrierConfigCard";
 import { SystemStatusPage } from "./SystemStatusPage";
 import { AuditLogsUI } from "./AuditLogsUI";
 
-export const AdminHub: React.FC = () => {
+interface AdminHubProps {
+  onNavigate?: (tab: string) => void;
+}
+
+export const AdminHub: React.FC<AdminHubProps> = ({ onNavigate }) => {
   return (
     <div className="space-y-5">
       {/* Top Banner */}
@@ -27,7 +31,7 @@ export const AdminHub: React.FC = () => {
       <RoleManagementUI />
 
       {/* 3. Carrier GSM Trunk Gateway */}
-      <CarrierConfigCard />
+      <CarrierConfigCard onNavigate={onNavigate} />
 
       {/* 4. Live WebRTC Health & Diagnostics */}
       <SystemStatusPage />

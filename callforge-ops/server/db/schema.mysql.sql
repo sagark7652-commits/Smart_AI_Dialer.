@@ -1219,3 +1219,29 @@ ORDER BY c.created_at DESC;
 -- ============================================================================
 -- END OF CALLFORGE OPS SCHEMA
 -- ============================================================================
+
+
+-- ============================================================================
+-- VIRTUAL NUMBERS MANAGEMENT SCHEMA (MySQL)
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS virtual_numbers (
+    id VARCHAR(100) PRIMARY KEY,
+    phone_number VARCHAR(30) UNIQUE NOT NULL,
+    friendly_name VARCHAR(150) NOT NULL,
+    provider VARCHAR(50) NOT NULL,
+    status ENUM('active', 'inactive', 'pending_validation', 'error') DEFAULT 'active' NOT NULL,
+    type ENUM('inbound', 'outbound', 'bidirectional') DEFAULT 'bidirectional' NOT NULL,
+    capabilities JSON,
+    assigned_agent_id VARCHAR(100) DEFAULT 'agent_aarogya_dental',
+    inbound_routing JSON,
+    provider_config JSON,
+    webhook_url TEXT,
+    is_default_outbound BOOLEAN DEFAULT FALSE NOT NULL,
+    stats JSON,
+    validation JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
+    INDEX idx_vn_phone (phone_number),
+    INDEX idx_vn_provider (provider)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

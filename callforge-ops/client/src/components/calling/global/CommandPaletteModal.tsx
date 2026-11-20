@@ -147,7 +147,18 @@ export function CommandPaletteModal({
         subtitle: "Historical recordings, transcripts & QA scores",
         icon: FileText,
         action: () => {
-          onNavigate("Call Logs");
+          onNavigate("Call Logs (CDR)");
+          onClose();
+        },
+      },
+      {
+        id: "nav-virtual-numbers",
+        category: "Navigation",
+        title: "Go to Virtual Numbers",
+        subtitle: "Manage, validate, activate & route carrier phone numbers",
+        icon: Phone,
+        action: () => {
+          onNavigate("Virtual Numbers");
           onClose();
         },
       },

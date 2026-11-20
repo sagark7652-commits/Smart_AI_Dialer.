@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { boolean, int, json, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -25,4 +25,29 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+/**
+ * Virtual Number Management Table
+ * Stores provisioned virtual phone numbers, telecom carrier bindings,
+ * AI agent routing configurations, and health validation stats.
+ */
+export const virtualNumbers = mysqlTable("virtual_numbers", {
+  id: varchar("id", { length: 100 }).primaryKey(),
+  phoneNumber: varchar("phone_number", { length: 30 }).notNull().unique(),
+  friendlyName: varchar("friendly_name", { length: 150 }).notNull(),
+  provider: varchar("provider", { length: 50 }).notNull(),
+  status: mysqlEnum("status", ["active", "inactive", "pending_validation", "error"]).default("active").notNull(),
+  type: mysqlEnum("type", ["inbound", "outbound", "bidirectional"]).default("bidirectional").notNull(),
+  capabilities: json("capabilities"),
+  assignedAgentId: varchar("assigned_agent_id", { length: 100 }).default("agent_aarogya_dental"),
+  inboundRouting: json("inbound_routing"),
+  providerConfig: json("provider_config"),
+  webhookUrl: text("webhook_url"),
+  isDefaultOutbound: boolean("is_default_outbound").default(false).notNull(),
+  stats: json("stats"),
+  validation: json("validation"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
+});
+
+export type VirtualNumberRecord = typeof virtualNumbers.$inferSelect;
+export type InsertVirtualNumber = typeof virtualNumbers.$inferInsert;
